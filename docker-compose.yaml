@@ -1,0 +1,26 @@
+version: "3.7"
+services:
+  shigio_postgres:
+    image: postgres:alpine
+    container_name: shigio_postgres
+    volumes:
+      - ./pgdata:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=pokemonstore
+      - PGDATA=/var/lib/postgresql/data/pgdata
+  web:
+    build: .
+    container_name: shigio_backend
+    expose:
+      - 8080
+    ports:
+      - 8080:8080
+    depends_on:
+      - shigio_postgres
+    environment:
+      - MYAPP_JDBC_USER=postgres
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://shigio_postgres:5432/pokemonstore?password=password
+      - MYAPP_JDBC_PASS=postgres
+      - MYAPP_JDBC_HOST=shigio_postgres
